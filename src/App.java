@@ -1,4 +1,6 @@
+import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -10,7 +12,7 @@ public class App {
     public static void main(String[] args) throws Exception {
         //Consumindo a API de filmes.
         //Fazer uma conexão HTTP e buscar os top 250 filmes.
-        String url = "https://mocki.io/v1/9a7c1ca9-29b4-4eb3-8306-1adb9d159060";
+        String url = "https://alura-imdb-api.herokuapp.com/movies";
         /* Lista de APIs para utilização (caso esteja fora)
          * https://imdb-api.com/
          * (https://alura-imdb-api.herokuapp.com/movies) criada pelo Jhon Santana
@@ -29,13 +31,20 @@ public class App {
         List<Map<String, String>> listaDeFilmes = parser.parse(body);
         
         //Exibir e manipular os dados.
+        var geradora = new GeradoraDeFigurinhas();
+        
         for (Map<String,String> filme : listaDeFilmes) {
-            System.out.println(filme.get("title"));
-            System.out.println(filme.get("image"));
-            System.out.println(filme.get("imDbRating"));
+
+            String urlImagem = filme.get("image");
+            String titulo = filme.get("title");
+
+            InputStream inputStream = new URL(urlImagem).openStream();
+            String nomeArquivo = titulo + ".png";
+
+            geradora.cria(inputStream, nomeArquivo);
+
+            System.out.println(titulo);
             System.out.println();
         }
-
-        
     }
 }
